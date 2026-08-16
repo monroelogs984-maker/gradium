@@ -1,0 +1,16 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.glennfo.gradium.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "DimensionDataStorageAccessor",
+    "DimensionDataStorageMixin",
+    "PlayerListMixin",
+    "PoiManagerMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}
