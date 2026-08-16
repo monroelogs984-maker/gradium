@@ -1,36 +1,70 @@
-plugins {
-    id 'net.neoforged.gradle.userdev' version '7.1.38'
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
 }
 
-version = '2.0.0'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+
+version = '1.1.0-1.19.2'
 group = 'com.glennfo.gradium'
-
-base {
-    archivesName = 'gradium'
-}
+archivesBaseName = 'gradium'
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
-runs {
-    configureEach {
-        systemProperty 'neoforge.logging.markers', 'REGISTRIES'
-        systemProperty 'neoforge.logging.console.level', 'debug'
-        modSource project.sourceSets.main
+minecraft {
+    mappings channel: 'official', version: '1.19.2'
+
+    runs {
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                gradium { source sourceSets.main }
+            }
+        }
     }
-    server {}
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:21.11.42"
+    minecraft 'net.minecraftforge:forge:1.19.2-43.3.0'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
-tasks.register('deploy', Copy) {
-    dependsOn build
-    from(layout.buildDirectory.dir('libs')) {
-        include "gradium-*.jar"
-        exclude "*-sources.jar"
+jar {
+    manifest {
+        attributes([
+            'Specification-Title'     : 'gradium',
+            'Specification-Vendor'    : 'glennfo',
+            'Specification-Version'   : '1',
+            'Implementation-Title'    : project.name,
+            'Implementation-Version'  : project.version,
+            'Implementation-Vendor'   : 'glennfo',
+            'MixinConfigs'            : 'gradium.mixins.json',
+        ])
     }
-    into '/home/glenn/Documents/curseforge/minecraft/Instances/1.21.11/mods'
+}
+
+jar.finalizedBy('reobfJar')
+
+task deploy {
+    dependsOn build
+    doLast {
+        copy {
+            from "build/libs/${archivesBaseName}-${version}.jar"
+            into '/home/glenn/Documents/curseforge/minecraft/Instances/1.19.2/mods'
+        }
+        println "[DEPLOY] gradium → 1.19.2"
+    }
 }

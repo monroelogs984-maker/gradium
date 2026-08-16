@@ -1,16 +1,16 @@
 package com.glennfo.gradium;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class GradiumConfig {
 
-    public static final ModConfigSpec SPEC;
+    public static final ForgeConfigSpec SPEC;
 
-    public static final ModConfigSpec.IntValue MIN_SAVES_PER_TICK;
-    public static final ModConfigSpec.IntValue MAX_SAVES_PER_TICK;
+    public static final ForgeConfigSpec.IntValue MIN_SAVES_PER_TICK;
+    public static final ForgeConfigSpec.IntValue MAX_SAVES_PER_TICK;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
         builder.comment("Gradium — adaptive entity & POI save spreading").push("general");
 

@@ -17,19 +17,9 @@ public abstract class PlayerListMixin {
     @Shadow
     private List<ServerPlayer> players;
 
-    /**
-     * Intercept {@code PlayerList.saveAll()} at HEAD.
-     *
-     * <p>When {@code processing} is false (normal game flow), we cancel the all-at-once write
-     * and instead enqueue each online player for deferred saving. When {@code processing} is
-     * true, {@link PlayerSaveQueue} is deliberately draining and we let the call through.</p>
-     */
     @Inject(method = "saveAll", at = @At("HEAD"), cancellable = true)
     private void gradium$interceptSaveAll(CallbackInfo ci) {
-        if (PlayerSaveQueue.processing) {
-            // We are draining the queue — let the real saveAll() run.
-            return;
-        }
+        if (PlayerSaveQueue.processing) return;
 
         PlayerList self = (PlayerList) (Object) this;
 
@@ -37,7 +27,6 @@ public abstract class PlayerListMixin {
             PlayerSaveQueue.enqueue(self, player);
         }
 
-        // Suppress the vanilla all-at-once save; our queue will handle each player.
         ci.cancel();
     }
 }

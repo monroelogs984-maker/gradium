@@ -1,16 +1,17 @@
 package com.glennfo.gradium;
 
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-@EventBusSubscriber(modid = Gradium.MOD_ID)
+@Mod.EventBusSubscriber(modid = Gradium.MOD_ID)
 public class ServerTickHandler {
 
     @SubscribeEvent
-    public static void onServerTick(ServerTickEvent.Post event) {
+    public static void onServerTick(TickEvent.ServerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
         TpsMonitor.recordTick();
 
         int rate = TpsMonitor.getAdaptiveRate(
@@ -24,7 +25,7 @@ public class ServerTickHandler {
     }
 
     @SubscribeEvent
-    public static void onLevelUnload(LevelEvent.Unload event) {
+    public static void onWorldUnload(LevelEvent.Unload event) {
         if (!(event.getLevel() instanceof ServerLevel)) return;
         PoiSaveQueue.drainAll();
         SavedDataQueue.drainAll();
