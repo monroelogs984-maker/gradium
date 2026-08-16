@@ -1,7 +1,7 @@
 package com.glennfo.gradium;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.PlayerList;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.management.PlayerList;
 
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
@@ -14,8 +14,8 @@ public class PlayerSaveQueue {
 
     public static class Entry {
         public final PlayerList list;
-        public final ServerPlayer player;
-        Entry(PlayerList list, ServerPlayer player) {
+        public final ServerPlayerEntity player;
+        Entry(PlayerList list, ServerPlayerEntity player) {
             this.list = list;
             this.player = player;
         }
@@ -35,7 +35,7 @@ public class PlayerSaveQueue {
             if (saveMethodResolved) return saveMethod;
             for (String name : new String[]{"save", "func_72364_a"}) {
                 try {
-                    Method m = PlayerList.class.getDeclaredMethod(name, ServerPlayer.class);
+                    Method m = PlayerList.class.getDeclaredMethod(name, ServerPlayerEntity.class);
                     m.setAccessible(true);
                     saveMethod = m;
                     saveMethodResolved = true;
@@ -44,7 +44,7 @@ public class PlayerSaveQueue {
             }
             for (Method m : PlayerList.class.getDeclaredMethods()) {
                 Class<?>[] params = m.getParameterTypes();
-                if (params.length == 1 && params[0] == ServerPlayer.class
+                if (params.length == 1 && params[0] == ServerPlayerEntity.class
                         && m.getReturnType() == void.class) {
                     try {
                         m.setAccessible(true);
@@ -54,14 +54,14 @@ public class PlayerSaveQueue {
                 }
             }
             if (saveMethod == null) {
-                System.err.println("[Gradium] PlayerSaveQueue: could not resolve PlayerList.save(ServerPlayer)");
+                System.err.println("[Gradium] PlayerSaveQueue: could not resolve PlayerList.save(ServerPlayerEntity)");
             }
             saveMethodResolved = true;
             return saveMethod;
         }
     }
 
-    public static synchronized boolean enqueue(PlayerList list, ServerPlayer player) {
+    public static synchronized boolean enqueue(PlayerList list, ServerPlayerEntity player) {
         UUID uuid = player.getUUID();
         if (!queued.add(uuid)) return false;
         queue.addLast(new Entry(list, player));

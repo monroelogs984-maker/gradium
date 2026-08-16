@@ -1,8 +1,8 @@
 package com.glennfo.gradium;
 
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -25,8 +25,8 @@ public class ServerTickHandler {
     }
 
     @SubscribeEvent
-    public static void onWorldUnload(LevelEvent.Unload event) {
-        if (!(event.getLevel() instanceof ServerLevel)) return;
+    public static void onWorldUnload(WorldEvent.Unload event) {
+        if (!(event.getWorld() instanceof ServerWorld)) return;
         PoiSaveQueue.drainAll();
         SavedDataQueue.drainAll();
         PlayerSaveQueue.drainAll();

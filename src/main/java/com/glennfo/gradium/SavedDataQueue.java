@@ -1,8 +1,8 @@
 package com.glennfo.gradium;
 
 import com.glennfo.gradium.mixin.DimensionSavedDataManagerAccessor;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.storage.DimensionSavedDataManager;
+import net.minecraft.world.storage.WorldSavedData;
 
 import java.io.File;
 import java.util.ArrayDeque;
@@ -13,10 +13,10 @@ import java.util.Set;
 public class SavedDataQueue {
 
     public static class Entry {
-        public final DimensionDataStorage storage;
+        public final DimensionSavedDataManager storage;
         public final String id;
-        public final SavedData data;
-        Entry(DimensionDataStorage storage, String id, SavedData data) {
+        public final WorldSavedData data;
+        Entry(DimensionSavedDataManager storage, String id, WorldSavedData data) {
             this.storage = storage;
             this.id = id;
             this.data = data;
@@ -28,11 +28,11 @@ public class SavedDataQueue {
     private static final Deque<Entry> queue = new ArrayDeque<Entry>();
     private static final Set<String> queued = new HashSet<String>();
 
-    private static String dedupKey(DimensionDataStorage storage, String id) {
+    private static String dedupKey(DimensionSavedDataManager storage, String id) {
         return System.identityHashCode(storage) + ":" + id;
     }
 
-    public static synchronized boolean enqueue(DimensionDataStorage storage, String id, SavedData data) {
+    public static synchronized boolean enqueue(DimensionSavedDataManager storage, String id, WorldSavedData data) {
         String key = dedupKey(storage, id);
         if (!queued.add(key)) return false;
         queue.addLast(new Entry(storage, id, data));

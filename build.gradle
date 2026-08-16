@@ -13,16 +13,14 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.1.0-1.19.2'
+version = '1.1.0-1.16.5'
 group = 'com.glennfo.gradium'
 archivesBaseName = 'gradium'
 
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
-}
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'official', version: '1.19.2'
+    mappings channel: 'official', version: '1.16.5'
 
     runs {
         server {
@@ -37,7 +35,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.3.0'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
@@ -63,8 +61,8 @@ task deploy {
     doLast {
         copy {
             from "build/libs/${archivesBaseName}-${version}.jar"
-            into '/home/glenn/Documents/curseforge/minecraft/Instances/1.19.2/mods'
+            into '/home/glenn/Documents/curseforge/minecraft/Instances/1.16.5/mods'
         }
-        println "[DEPLOY] gradium → 1.19.2"
+        println "[DEPLOY] gradium → 1.16.5"
     }
 }

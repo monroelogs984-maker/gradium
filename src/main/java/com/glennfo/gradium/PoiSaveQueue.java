@@ -1,6 +1,6 @@
 package com.glennfo.gradium;
 
-import net.minecraft.world.entity.ai.village.poi.PoiManager;
+import net.minecraft.village.PointOfInterestManager;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -12,10 +12,10 @@ public class PoiSaveQueue {
 
     public static volatile boolean processing = false;
 
-    private static final Deque<PoiManager> queue = new ArrayDeque<PoiManager>();
-    private static final Set<PoiManager> queued = new HashSet<PoiManager>();
+    private static final Deque<PointOfInterestManager> queue = new ArrayDeque<PointOfInterestManager>();
+    private static final Set<PointOfInterestManager> queued = new HashSet<PointOfInterestManager>();
 
-    public static synchronized boolean enqueue(PoiManager manager) {
+    public static synchronized boolean enqueue(PointOfInterestManager manager) {
         if (!queued.add(manager)) return false;
         queue.addLast(manager);
         return true;
@@ -27,7 +27,7 @@ public class PoiSaveQueue {
         try {
             int remaining = n;
             while (remaining > 0 && !queue.isEmpty()) {
-                PoiManager manager = queue.pollFirst();
+                PointOfInterestManager manager = queue.pollFirst();
                 queued.remove(manager);
                 try {
                     manager.tick(() -> true);
@@ -45,7 +45,7 @@ public class PoiSaveQueue {
         processing = true;
         try {
             while (!queue.isEmpty()) {
-                PoiManager manager = queue.pollFirst();
+                PointOfInterestManager manager = queue.pollFirst();
                 queued.remove(manager);
                 try {
                     manager.tick(() -> true);
