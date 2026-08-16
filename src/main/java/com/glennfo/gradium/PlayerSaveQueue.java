@@ -124,14 +124,14 @@ public class PlayerSaveQueue {
         Method m = resolveSaveMethod();
         if (m == null) {
             System.err.println("[Gradium] PlayerSaveQueue: no save method — skipping player: "
-                    + entry.player().getGameProfile().getName());
+                    + entry.player().getGameProfile().name());
             return;
         }
         try {
             m.invoke(entry.list(), entry.player());
         } catch (Exception e) {
             System.err.println("[Gradium] PlayerSaveQueue: save failed for '"
-                    + entry.player().getGameProfile().getName() + "': " + e.getMessage());
+                    + entry.player().getGameProfile().name() + "': " + e.getMessage());
         }
     }
 }
