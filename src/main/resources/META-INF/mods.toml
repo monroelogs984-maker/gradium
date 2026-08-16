@@ -1,10 +1,10 @@
 modLoader="javafml"
-loaderVersion="[36,)"
+loaderVersion="[31,)"
 license="MIT"
 
 [[mods]]
 modId="gradium"
-version="1.1.0-1.16.5"
+version="1.1.0-1.15.2"
 displayName="Gradium"
 description='''
 Adaptive save lag reducer. Spreads entity, POI, player, and world data saves
@@ -14,13 +14,13 @@ across multiple ticks proportional to current server TPS.
 [[dependencies.gradium]]
     modId="forge"
     mandatory=true
-    versionRange="[36,)"
+    versionRange="[31,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.gradium]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.5,1.17)"
+    versionRange="[1.15.2,1.16)"
     ordering="NONE"
     side="BOTH"

@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
@@ -13,14 +13,14 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.1.0-1.16.5'
+version = '1.1.0-1.15.2'
 group = 'com.glennfo.gradium'
 archivesBaseName = 'gradium'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'snapshot', version: '20200514-1.15.1'
 
     runs {
         server {
@@ -35,7 +35,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.57'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
@@ -61,8 +61,8 @@ task deploy {
     doLast {
         copy {
             from "build/libs/${archivesBaseName}-${version}.jar"
-            into '/home/glenn/Documents/curseforge/minecraft/Instances/1.16.5/mods'
+            into '/home/glenn/Documents/curseforge/minecraft/Instances/Sovereign: Wild\'s Edge/mods'
         }
-        println "[DEPLOY] gradium → 1.16.5"
+        println "[DEPLOY] gradium → Sovereign: Wild's Edge"
     }
 }

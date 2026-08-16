@@ -17,7 +17,7 @@ public abstract class PlayerListMixin {
     @Shadow
     private List<ServerPlayerEntity> players;
 
-    @Inject(method = "saveAll", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "saveAllPlayerData", at = @At("HEAD"), cancellable = true)
     private void gradium$interceptSaveAll(CallbackInfo ci) {
         if (PlayerSaveQueue.processing) return;
 

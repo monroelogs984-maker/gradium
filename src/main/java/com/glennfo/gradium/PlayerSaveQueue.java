@@ -62,7 +62,7 @@ public class PlayerSaveQueue {
     }
 
     public static synchronized boolean enqueue(PlayerList list, ServerPlayerEntity player) {
-        UUID uuid = player.getUUID();
+        UUID uuid = player.getUniqueID();
         if (!queued.add(uuid)) return false;
         queue.addLast(new Entry(list, player));
         return true;
@@ -75,7 +75,7 @@ public class PlayerSaveQueue {
             int remaining = n;
             while (remaining > 0 && !queue.isEmpty()) {
                 Entry entry = queue.pollFirst();
-                queued.remove(entry.player.getUUID());
+                queued.remove(entry.player.getUniqueID());
                 savePlayer(entry);
                 remaining--;
             }
@@ -89,7 +89,7 @@ public class PlayerSaveQueue {
         try {
             while (!queue.isEmpty()) {
                 Entry entry = queue.pollFirst();
-                queued.remove(entry.player.getUUID());
+                queued.remove(entry.player.getUniqueID());
                 savePlayer(entry);
             }
         } finally {
