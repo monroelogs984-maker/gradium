@@ -21,6 +21,6 @@ config="gradium.mixins.json"
 
 [[mods]]
 modId="gradium"
-version="2.0.0"
+version="2.0.1"
 displayName="Gradium"
 description="Spreads chunk saves across multiple ticks to eliminate lag spikes."

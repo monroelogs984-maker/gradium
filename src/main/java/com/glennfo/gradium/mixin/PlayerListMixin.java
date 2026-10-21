@@ -1,5 +1,6 @@
 package com.glennfo.gradium.mixin;
 
+import com.glennfo.gradium.Gradium;
 import com.glennfo.gradium.PlayerSaveQueue;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -26,8 +27,8 @@ public abstract class PlayerListMixin {
      */
     @Inject(method = "saveAll", at = @At("HEAD"), cancellable = true)
     private void gradium$interceptSaveAll(CallbackInfo ci) {
-        if (PlayerSaveQueue.processing) {
-            // We are draining the queue — let the real saveAll() run.
+        if (PlayerSaveQueue.processing || Gradium.isShuttingDown()) {
+            // Draining the queue or shutting down — let the real saveAll() run.
             return;
         }
 

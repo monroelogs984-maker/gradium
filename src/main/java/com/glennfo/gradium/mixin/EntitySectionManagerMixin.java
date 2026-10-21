@@ -19,7 +19,7 @@ public abstract class EntitySectionManagerMixin {
     @SuppressWarnings("unchecked")
     private void gradium$interceptAutoSave(CallbackInfo ci) {
         if (EntitySaveQueue.processing) {
-            // We are draining the queue — let the real autoSave run.
+            // Draining the queue or shutting down — let the real autoSave run.
             return;
         }
         // Defer this manager to the queue and suppress the vanilla call.

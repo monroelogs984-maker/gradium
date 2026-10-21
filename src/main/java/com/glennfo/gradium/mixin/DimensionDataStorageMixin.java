@@ -1,5 +1,6 @@
 package com.glennfo.gradium.mixin;
 
+import com.glennfo.gradium.Gradium;
 import com.glennfo.gradium.SavedDataQueue;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
@@ -23,8 +24,8 @@ public abstract class DimensionDataStorageMixin {
      */
     @Inject(method = "save", at = @At("HEAD"), cancellable = true)
     private void gradium$interceptSave(CallbackInfo ci) {
-        if (SavedDataQueue.processing) {
-            // We are draining the queue — let the real save() run for this entry.
+        if (SavedDataQueue.processing || Gradium.isShuttingDown()) {
+            // Draining the queue or shutting down — let the real save() run for this entry.
             return;
         }
 

@@ -1,5 +1,6 @@
 package com.glennfo.gradium.mixin;
 
+import com.glennfo.gradium.Gradium;
 import com.glennfo.gradium.PoiSaveQueue;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,8 +26,8 @@ public abstract class PoiManagerMixin {
      */
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void gradium$interceptTick(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
-        if (PoiSaveQueue.processing) {
-            // We are draining the queue — let the real tick run.
+        if (PoiSaveQueue.processing || Gradium.isShuttingDown()) {
+            // Draining the queue or shutting down — let the real tick run.
             return;
         }
         // Defer this manager to the queue and suppress the vanilla call.
