@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "gradium",
+  "version": "${version}",
+  "name": "Gradium",
+  "description": "Spreads autosaves (POI, world data, players) across ticks to remove autosave lag spikes. Shutdown saves always run in full.",
+  "authors": ["BROMAX012"],
+  "contact": {
+    "sources": "https://github.com/monroelogs984-maker/gradium",
+    "issues": "https://github.com/monroelogs984-maker/gradium/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.glennfo.gradium.Gradium"]
+  },
+  "mixins": ["gradium.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "~1.21.1",
+    "java": ">=21"
+  }
+}

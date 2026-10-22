@@ -6,6 +6,7 @@
   "mixins": [
     "DimensionDataStorageAccessor",
     "DimensionDataStorageMixin",
+    "PlayerListAccessor",
     "PlayerListMixin",
     "PoiManagerMixin"
   ],

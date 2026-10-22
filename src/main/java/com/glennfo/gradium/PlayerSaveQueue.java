@@ -1,9 +1,9 @@
 package com.glennfo.gradium;
 
+import com.glennfo.gradium.mixin.PlayerListAccessor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 
-import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
@@ -17,8 +17,8 @@ import java.util.UUID;
  * here. We drain {@code n} players per tick based on the adaptive rate. When {@code processing}
  * is true the mixin lets the real {@code saveAll()} through so we don't recurse.</p>
  *
- * <p>{@code PlayerList.save(ServerPlayer)} is {@code protected}, so we invoke it via reflection.
- * The method handle is resolved and cached once on first use.</p>
+ * <p>{@code PlayerList.save(ServerPlayer)} is {@code protected}, so it is called through
+ * {@link PlayerListAccessor}.</p>
  */
 public class PlayerSaveQueue {
 
@@ -31,44 +31,6 @@ public class PlayerSaveQueue {
 
     /** Dedup by player UUID. */
     private static final Set<UUID> queued = new HashSet<>();
-
-    // Cached reflection handle for PlayerList.save(ServerPlayer) (protected).
-    private static volatile Method saveMethod = null;
-    private static volatile boolean saveMethodResolved = false;
-
-    private static Method resolveSaveMethod() {
-        if (saveMethodResolved) return saveMethod;
-        synchronized (PlayerSaveQueue.class) {
-            if (saveMethodResolved) return saveMethod;
-            // Try known names first, then fall back to signature scan (handles obfuscated envs).
-            for (String name : new String[]{"save", "m_11347_"}) {
-                try {
-                    Method m = PlayerList.class.getDeclaredMethod(name, ServerPlayer.class);
-                    m.setAccessible(true);
-                    saveMethod = m;
-                    saveMethodResolved = true;
-                    return saveMethod;
-                } catch (NoSuchMethodException ignored) {}
-            }
-            // Signature scan: find any (ServerPlayer) -> void method on PlayerList.
-            for (Method m : PlayerList.class.getDeclaredMethods()) {
-                Class<?>[] params = m.getParameterTypes();
-                if (params.length == 1 && params[0] == ServerPlayer.class
-                        && m.getReturnType() == void.class) {
-                    try {
-                        m.setAccessible(true);
-                        saveMethod = m;
-                        break;
-                    } catch (Exception ignored) {}
-                }
-            }
-            if (saveMethod == null) {
-                System.err.println("[Gradium] PlayerSaveQueue: could not resolve PlayerList.save(ServerPlayer)");
-            }
-            saveMethodResolved = true;
-            return saveMethod;
-        }
-    }
 
     /** Enqueue a player for deferred saving. Dedup by UUID. */
     public static synchronized boolean enqueue(PlayerList list, ServerPlayer player) {
@@ -121,14 +83,8 @@ public class PlayerSaveQueue {
     }
 
     private static void savePlayer(Entry entry) {
-        Method m = resolveSaveMethod();
-        if (m == null) {
-            System.err.println("[Gradium] PlayerSaveQueue: no save method — skipping player: "
-                    + entry.player().getGameProfile().getName());
-            return;
-        }
         try {
-            m.invoke(entry.list(), entry.player());
+            ((PlayerListAccessor) entry.list()).invokeSave(entry.player());
         } catch (Exception e) {
             System.err.println("[Gradium] PlayerSaveQueue: save failed for '"
                     + entry.player().getGameProfile().getName() + "': " + e.getMessage());
